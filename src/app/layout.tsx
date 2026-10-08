@@ -4,6 +4,10 @@ import Header from "@/components/Header";
 import Providers from "@/components/Providers";
 import "./globals.css";
 
+// Prices change daily and the header (ticker + categories) reads live API data,
+// so never prerender at build time. API responses are still cached for 5 minutes.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: {
     default: "বাজার দর | BazarDor",
@@ -22,6 +26,8 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Loaded at runtime (not via next/font) so builds never depend on Google being reachable. */}
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"

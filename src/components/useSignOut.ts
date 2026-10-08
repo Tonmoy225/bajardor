@@ -14,7 +14,9 @@ export function useSignOut() {
           router.push("/");
           router.refresh();
         },
-        onError: (ctx) => toast.error(ctx.error.message || "সাইন আউট করা যায়নি"),
+        onError: (ctx) => {
+          toast.error(ctx.error.message || "সাইন আউট করা যায়নি");
+        },
       },
     });
   };
