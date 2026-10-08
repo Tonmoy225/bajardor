@@ -1,15 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
 import Avatar from "./Avatar";
+import { useSignOut } from "./useSignOut";
 
 const closeMenu = () => (document.activeElement as HTMLElement | null)?.blur();
 
 export default function UserMenu() {
-  const router = useRouter();
+  const signOut = useSignOut();
   const { data: session, isPending } = authClient.useSession();
 
   if (isPending) {
@@ -33,16 +32,7 @@ export default function UserMenu() {
 
   async function handleSignOut() {
     closeMenu();
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          toast.success("সফলভাবে সাইন আউট হয়েছে");
-          router.push("/");
-          router.refresh();
-        },
-        onError: (ctx) => toast.error(ctx.error.message || "সাইন আউট করা যায়নি"),
-      },
-    });
+    await signOut();
   }
 
   return (
