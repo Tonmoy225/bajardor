@@ -31,7 +31,14 @@ export default function SocialButtons({ callbackURL = "/" }: { callbackURL?: str
 
   async function handle(provider: Provider) {
     setPending(provider);
-    const { error } = await authClient.signIn.social({ provider, callbackURL });
+    // Absolute URLs so the user always comes back to the same site they started on.
+    const origin = window.location.origin;
+    const { error } = await authClient.signIn.social({
+      provider,
+      callbackURL: `${origin}${callbackURL}`,
+      errorCallbackURL: `${origin}/signin`,
+      newUserCallbackURL: `${origin}${callbackURL}`,
+    });
     if (error) {
       toast.error(authErrorMessage(error));
       setPending(null);

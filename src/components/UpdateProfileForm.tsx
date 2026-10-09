@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -24,20 +23,41 @@ export default function UpdateProfileForm({ currentName }: { currentName: string
       return;
     }
 
-    setLoading(true);
-    // https://better-auth.com/docs/concepts/users-accounts#update-user
-    const { error } = await authClient.updateUser({ name: trimmed });
-    setLoading(false);
-    if (error) {
-      const message = authErrorMessage(error);
+    if (trimmed.length > 50) {
+      const message = "নাম ৫০ অক্ষরের বেশি হতে পারবে না";
+      setError(message);
+      toast.error(message);
+      return;
+    }
+    if (trimmed === currentName.trim()) {
+      const message = "নতুন কোনো নাম দেননি";
       setError(message);
       toast.error(message);
       return;
     }
 
-    toast.success("তথ্য সফলভাবে আপডেট হয়েছে");
-    router.push("/profile");
-    router.refresh();
+    setLoading(true);
+    try {
+      // https://better-auth.com/docs/concepts/users-accounts#update-user
+      const { error } = await authClient.updateUser({ name: trimmed });
+      if (error) {
+        const message = authErrorMessage(error);
+        setError(message);
+        toast.error(message);
+        setLoading(false);
+        return;
+      }
+      toast.success("নাম সফলভাবে হালনাগাদ হয়েছে");
+      // Stay on the page: refresh server data so the profile card shows the new name.
+      // (The header updates by itself because it reads the same session.)
+      setLoading(false);
+      router.refresh();
+    } catch {
+      const message = "নাম আপডেট করা যায়নি, আবার চেষ্টা করুন";
+      setError(message);
+      toast.error(message);
+      setLoading(false);
+    }
   }
 
   return (
@@ -60,13 +80,10 @@ export default function UpdateProfileForm({ currentName }: { currentName: string
           {error}
         </p>
       )}
-      <button type="submit" disabled={loading} className="btn btn-primary w-full font-bold shadow-md">
+      <button type="submit" disabled={loading} className="btn btn-primary font-bold shadow-md">
         {loading && <span className="loading loading-spinner loading-sm" />}
-        তথ্য আপডেট করুন
+        নাম হালনাগাদ করুন
       </button>
-      <Link href="/profile" className="btn btn-ghost w-full">
-        বাতিল
-      </Link>
     </form>
   );
 }

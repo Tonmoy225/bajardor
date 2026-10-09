@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
 import Avatar from "./Avatar";
 import { useSignOut } from "./useSignOut";
@@ -9,7 +10,12 @@ const closeMenu = () => (document.activeElement as HTMLElement | null)?.blur();
 
 export default function UserMenu() {
   const signOut = useSignOut();
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session, isPending, refetch } = authClient.useSession();
+
+  // After coming back from Google/GitHub, re-read the session so the header updates.
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   if (isPending) {
     return <div className="skeleton h-10 w-28 rounded-lg" aria-label="লোড হচ্ছে" />;

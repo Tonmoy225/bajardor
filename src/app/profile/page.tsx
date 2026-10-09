@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import UpdateProfileForm from "@/components/UpdateProfileForm";
 import Avatar from "@/components/Avatar";
 import SignOutButton from "@/components/SignOutButton";
 import { requireSession } from "@/lib/session";
@@ -27,20 +27,8 @@ export default async function ProfilePage() {
       </section>
 
       <section className="mt-4 rounded-3xl border border-base-300 bg-base-100 p-5 sm:p-6">
-        <h2 className="mb-4 text-lg font-bold">তথ্য</h2>
-        <dl className="space-y-3 text-sm">
-          <div className="flex justify-between gap-4 border-b border-base-300 pb-3">
-            <dt className="text-base-content/70">নাম</dt>
-            <dd className="font-medium">{user.name}</dd>
-          </div>
-          <div className="flex justify-between gap-4">
-            <dt className="text-base-content/70">ইমেইল</dt>
-            <dd className="truncate font-medium">{user.email}</dd>
-          </div>
-        </dl>
-        <Link href="/profile/update" className="btn btn-primary mt-6 w-full font-bold shadow-md">
-          তথ্য আপডেট করুন
-        </Link>
+        <h2 className="mb-4 text-lg font-bold">নাম হালনাগাদ করুন</h2>
+        <UpdateProfileForm currentName={user.name} />
       </section>
     </div>
   );
